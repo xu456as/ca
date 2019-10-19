@@ -13,5 +13,4 @@ public class ControlUnit {
     public ALUOp aluOp;
     public ExtSel extSel;
     public PCWre pcWre;
-    public RegWre regWre;
 }
