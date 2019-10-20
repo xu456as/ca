@@ -12,5 +12,5 @@ public class ControlUnit {
     public ALUM2Reg alum2Reg;
     public ALUOp aluOp;
     public ExtSel extSel;
-    public PCWre pcWre;
+    public PCSrc pcSrc;
 }
