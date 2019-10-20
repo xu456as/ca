@@ -21,4 +21,15 @@ public class Utils {
         return result;
     }
 
+    public static String byte32ToString(byte[] bytes) {
+        StringBuilder builder = new StringBuilder("");
+        for(int i = 0; i < 4; i++) {
+            byte thisByte = bytes[i];
+            for(int j = 0; j < 8; j++) {
+                boolean test = (thisByte & ( 1 << (7-j))) != 0;
+                builder.append((char)('0' + (test ? 1 : 0)));
+            }
+        }
+        return builder.toString();
+    }
 }

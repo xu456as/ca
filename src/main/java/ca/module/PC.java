@@ -15,4 +15,9 @@ public class PC {
     public int fetch() {
         return lastAddress;
     }
+
+    public void write(int immediate) {
+        lastAddress += immediate;
+    }
+
 }
