@@ -16,7 +16,7 @@ public class MoveInstruction extends Instruction {
     int rd = 0;
 
     @Override
-    public void ID(ControlUnit controlUnit) {
+    public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
         byte[] ins = this.rawInstruction;
         String insStr = String.format("%x%x%x%x", ins[0], ins[1], ins[2], ins[3]);
         if(insStr.substring(0, 6).equals("100000")) {
