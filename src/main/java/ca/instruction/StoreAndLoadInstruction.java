@@ -11,7 +11,7 @@ public class StoreAndLoadInstruction extends Instruction {
     }
 
     @Override
-    public void ID(ControlUnit controlUnit) {
+    public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
 
     }
 

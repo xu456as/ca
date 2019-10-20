@@ -7,7 +7,8 @@ public abstract class Instruction {
     Instruction(byte[] rawInstruction){
         this.rawInstruction = rawInstruction;
     }
-    public abstract void ID(ControlUnit controlUnit, RegisterFile registerFile);
+    public abstract void ID(RegisterFile registerFile, ControlUnit controlUnit);
+  
     public abstract void EXE(RegisterFile registerFile, ALU alu, ControlUnit controlUnit);
 
     public abstract void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc);

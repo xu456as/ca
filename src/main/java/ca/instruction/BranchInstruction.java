@@ -13,6 +13,8 @@ public class BranchInstruction extends Instruction {
     int rs = 0;
     int rt = 0;
     int immediate = 0;
+    @Override
+    public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
 
     @Override
     public void ID(ControlUnit controlUnit, RegisterFile registerFile) {
