@@ -1,5 +1,6 @@
 package ca.module;
 
+import ca.Utils;
 import ca.instruction.*;
 
 import java.io.BufferedReader;
@@ -19,10 +20,10 @@ public class SingleCycleCPU {
         int curIdx = 0;
         while (null != (line = reader.readLine())){
             byte[] rawInst = new byte[4];
-            rawInst[0] = Byte.parseByte(line.substring(0, 8), 2);
-            rawInst[1] = Byte.parseByte(line.substring(8, 16), 2);
-            rawInst[2] = Byte.parseByte(line.substring(16, 24), 2);
-            rawInst[3] = Byte.parseByte(line.substring(24, 32), 2);
+            rawInst[0] = Utils.stringToByte(line.substring(0, 8));
+            rawInst[1] = Utils.stringToByte(line.substring(8, 16));
+            rawInst[2] = Utils.stringToByte(line.substring(16, 24));
+            rawInst[3] = Utils.stringToByte(line.substring(24, 32));
             instructionMemory.rawInstruction[curIdx++] = rawInst;
         }
     }
