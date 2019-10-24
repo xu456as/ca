@@ -2,12 +2,7 @@ package ca.instruction;
 
 import ca.Utils;
 import ca.enums.*;
-import ca.module.ALU;
-import ca.module.ControlUnit;
-import ca.module.DataMemory;
-import ca.module.RegisterFile;
-
-import javax.rmi.CORBA.Util;
+import ca.module.*;
 
 public class LogicInstruction extends Instruction {
 
@@ -21,7 +16,7 @@ public class LogicInstruction extends Instruction {
 
     @Override
     public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
-        String rawString = new String(this.rawInstruction);
+        String rawString = Utils.byte32ToString(this.rawInstruction);
 
         String functionString = rawString.substring(0, 5);
         String operationString = rawString.substring(25, 31);
@@ -39,9 +34,9 @@ public class LogicInstruction extends Instruction {
             controlUnit.aluOp = ALUOp.XOR;
         }
 
-        rs = Integer.parseInt(rawString.substring(21, 25));
-        rt = Integer.parseInt(rawString.substring(16, 20));
-        rd = Integer.parseInt(rawString.substring(11, 15));
+        rs = Integer.parseInt(rawString.substring(21, 25), 2);
+        rt = Integer.parseInt(rawString.substring(16, 20), 2);
+        rd = Integer.parseInt(rawString.substring(11, 15), 2);
 
         registerFile.signalRead1(rs);
         registerFile.signalRead2(rt);
@@ -49,7 +44,6 @@ public class LogicInstruction extends Instruction {
 
     @Override
     public void EXE(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) {
-        String rawString = new String(this.rawInstruction);
 
         byte[] data1 = registerFile.fetchRead1();
         byte[] data2 = registerFile.fetchRead2();
@@ -74,12 +68,12 @@ public class LogicInstruction extends Instruction {
     }
 
     @Override
-    public void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit) {
+    public void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc) {
 
     }
 
     @Override
-    public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) {
+    public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, DataMemory dataMemory) {
         byte[] result = alu.aluResult();
         registerFile.signalWrite(rd, result);
         registerFile.doWrite();

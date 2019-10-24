@@ -13,5 +13,5 @@ public abstract class Instruction {
 
     public abstract void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc);
 
-    public abstract void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit);
+    public abstract void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, DataMemory dataMemory);
 }

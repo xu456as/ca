@@ -31,10 +31,10 @@ public class SingleCycleCPU {
     public void mainLoop() throws Exception {
         while (true) {
             instructionCycle.IF(pc, instructionMemory, controlUnit);
-            instructionCycle.ID(controlUnit);
+            instructionCycle.ID(registerFile, controlUnit);
             instructionCycle.EXE(registerFile, alu, controlUnit);
-            instructionCycle.MEM(registerFile, dataMemory, alu, controlUnit);
-            instructionCycle.WB(registerFile, alu, controlUnit);
+            instructionCycle.MEM(registerFile, dataMemory, alu, controlUnit, pc);
+            instructionCycle.WB(registerFile, alu, controlUnit, dataMemory);
         }
     }
 
@@ -49,33 +49,33 @@ public class SingleCycleCPU {
             Thread.sleep(0, 20);
         }
 
-        public void ID(ControlUnit controlUnit) throws Exception {
-            byte opBit =  (byte) (currentRawInstruction[0] >>> 26);
+        public void ID(RegisterFile registerFile, ControlUnit controlUnit) throws Exception {
+            String opType =  Utils.byte32ToString(currentRawInstruction).substring(0, 6);
             Instruction instruction = null;
-            switch (Byte.toString(opBit)) {
-                case "00000000":
-                case "00000001":
-                case "00000010":
+            switch (opType) {
+                case "000000":
+                case "000001":
+                case "000010":
                     instruction = new ArithmeticInstruction(currentRawInstruction);
                     break;
-                case "00010000":
-                case "00010001":
-                case "00010010":
+                case "010000":
+                case "010001":
+                case "010010":
                     instruction = new LogicInstruction(currentRawInstruction);
                     break;
-                case "00100000":
+                case "100000":
                     instruction = new MoveInstruction(currentRawInstruction);
                     break;
-                case "00100110":
-                case "00100111":
+                case "100110":
+                case "100111":
                     instruction = new StoreAndLoadInstruction(currentRawInstruction);
                     break;
-                case "00110000":
+                case "110000":
                     instruction = new BranchInstruction(currentRawInstruction);
                     break;
             }
             decodedInstruction = instruction;
-            decodedInstruction.ID(controlUnit);
+            decodedInstruction.ID(registerFile, controlUnit);
             Thread.sleep(0, 20);
         }
 
@@ -84,13 +84,13 @@ public class SingleCycleCPU {
             Thread.sleep(0, 40);
         }
 
-        public void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit) throws Exception {
-            decodedInstruction.MEM(registerFile, dataMemory, alu, controlUnit);
+        public void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc) throws Exception {
+            decodedInstruction.MEM(registerFile, dataMemory, alu, controlUnit, pc);
             Thread.sleep(0, 20);
         }
 
-        public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) throws Exception {
-            decodedInstruction.WB(registerFile, alu, controlUnit);
+        public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, DataMemory dataMemory) throws Exception {
+            decodedInstruction.WB(registerFile, alu, controlUnit, dataMemory);
             Thread.sleep(0, 20);
         }
     }

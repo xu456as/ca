@@ -1,31 +1,57 @@
 package ca.module;
 
+import ca.Utils;
+
 public class ALU {
+
+    byte[] aluResult = null;
+
     public byte[] add(byte[] lhs, byte[] rhs) {
-        return null;
+        int byte_int1 = Utils.rawMemoryToInt32(lhs);
+        int byte_int2 = Utils.rawMemoryToInt32(rhs);
+        int byte_int_ttl = byte_int1+byte_int2;
+        aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+        return aluResult;
     }
 
     public byte[] minus(byte[] lhs, byte[] rhs){
-        return null;
+        int byte_int1 = Utils.rawMemoryToInt32(lhs);
+        int byte_int2 = Utils.rawMemoryToInt32(rhs);
+        int byte_int_ttl = byte_int1-byte_int2;
+        aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+        return aluResult;
     }
 
     public byte[] and(byte[] lhs, byte[] rhs) {
-        return null;
+        int byte_int1 = Utils.rawMemoryToInt32(lhs);
+        int byte_int2 = Utils.rawMemoryToInt32(rhs);
+        int byte_int_ttl = byte_int1&byte_int2;
+        aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+        return aluResult;
     }
 
     public byte[] or(byte[] lhs, byte[] rhs) {
-        return null;
+        int byte_int1 = Utils.rawMemoryToInt32(lhs);
+        int byte_int2 = Utils.rawMemoryToInt32(rhs);
+        int byte_int_ttl = byte_int1|byte_int2;
+        aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+        return aluResult;
     }
 
     public byte[] xor(byte[] lhs, byte[] rhs){
-        return null;
+        int byte_int1 = Utils.rawMemoryToInt32(lhs);
+        int byte_int2 = Utils.rawMemoryToInt32(rhs);
+        int byte_int_ttl = byte_int1^byte_int2;
+        aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+        return aluResult;
     }
 
     public byte[] aluResult(){
-        return null;
+        return aluResult;
     }
 
     public boolean generateZero() {
-        return false;
+        return aluResult == null ||
+                (aluResult[0] == 0 && aluResult[1] == 0 && aluResult[2] == 0 && aluResult[3] == 0);
     }
 }

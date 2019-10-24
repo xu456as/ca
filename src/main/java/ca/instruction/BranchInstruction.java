@@ -13,17 +13,15 @@ public class BranchInstruction extends Instruction {
     int rs = 0;
     int rt = 0;
     int immediate = 0;
-    @Override
-    public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
 
     @Override
-    public void ID(ControlUnit controlUnit, RegisterFile registerFile) {
+    public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
         byte[] ins = this.rawInstruction;
         String insStr = Utils.byte32ToString(ins);
         if(insStr.substring(0, 6).equals("110000")) {
-            rs = Integer.parseInt(insStr.substring(6, 11));
-            rt = Integer.parseInt(insStr.substring(11, 16));
-            immediate = Integer.parseInt(insStr.substring(16, 32));
+            rs = Integer.parseInt(insStr.substring(6, 11), 2);
+            rt = Integer.parseInt(insStr.substring(11, 16), 2);
+            immediate = Integer.parseInt(insStr.substring(16, 32), 2);
             registerFile.signalRead1(rs);
             registerFile.signalRead2(rt);
         }
@@ -50,7 +48,7 @@ public class BranchInstruction extends Instruction {
     }
 
     @Override
-    public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) {
+    public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, DataMemory dataMemory) {
 
     }
 }
