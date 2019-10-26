@@ -18,17 +18,17 @@ public class LogicInstruction extends Instruction {
     @Override
     public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
         String rawString = Utils.byte32ToString(this.rawInstruction);
-        String functionString = rawString.substring(0, 5);
-        String operationString = rawString.substring(25, 31);
+//        String functionString = rawString.substring(0, 5);
+        String operationString = rawString.substring(0, 6);
         boolean isOri = false;
 
         if (operationString.equals("010001")) {
             controlUnit.aluOp = ALUOp.AND;
-        } else if (functionString.equals("010010")) {
+        } else if (operationString.equals("010010")) {
             controlUnit.aluOp = ALUOp.OR;
-        } else if (functionString.equals("100110")) {
+        } else if (operationString.equals("100110")) {
             controlUnit.aluOp = ALUOp.XOR;
-        } else if (functionString.equals("010000")) {       // ori
+        } else if (operationString.equals("010000")) {       // ori
             controlUnit.aluOp = ALUOp.OR;
             isOri = true;
             immediate = SignZeroExtend.extend(rawString.substring(0, 15).getBytes(), 0);
@@ -39,9 +39,9 @@ public class LogicInstruction extends Instruction {
         controlUnit.regOut = RegOut.STATE_1;
         controlUnit.alum2Reg = ALUM2Reg.STATE_0;
 
-        rs = Integer.parseInt(rawString.substring(21, 25), 2);
-        rt = Integer.parseInt(rawString.substring(16, 20), 2);
-        rd = Integer.parseInt(rawString.substring(11, 15), 2);
+        rs = Integer.parseInt(rawString.substring(6, 11), 2);
+        rt = Integer.parseInt(rawString.substring(11, 16), 2);
+        rd = Integer.parseInt(rawString.substring(16, 21), 2);
 
         registerFile.signalRead1(rs);
         registerFile.signalRead2(rt);

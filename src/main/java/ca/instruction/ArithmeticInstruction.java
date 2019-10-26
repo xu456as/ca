@@ -20,7 +20,7 @@ public class ArithmeticInstruction extends Instruction {
     @Override
     public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
         String rawString = Utils.byte32ToString(this.rawInstruction);
-        String operationString = rawString.substring(25, 31);
+        String operationString = rawString.substring(0, 6);
         boolean isAddi = false;
 
         if (operationString.equals("000000")) {

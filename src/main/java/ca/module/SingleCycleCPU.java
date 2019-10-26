@@ -82,6 +82,9 @@ public class SingleCycleCPU {
                 case "110000":
                     instruction = new BranchInstruction(currentRawInstruction);
                     break;
+                case "010101":
+                    instruction = new SLTInstruction(currentRawInstruction);
+                    break;
             }
             decodedInstruction = instruction;
             decodedInstruction.ID(registerFile, controlUnit);
