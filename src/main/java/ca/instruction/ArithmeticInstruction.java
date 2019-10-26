@@ -28,7 +28,7 @@ public class ArithmeticInstruction extends Instruction {
         } else if (operationString.equals("0000010")) {         //Addi
             controlUnit.aluOp = ALUOp.SUB;
             isAddi = true;
-            immediate = ("0000000000000000" + rawString.substring(0, 15)).getBytes();
+            immediate = SignZeroExtend.extend(rawString.substring(0, 15).getBytes(), 0);
         } else if (operationString.equals("000001")) {
             controlUnit.aluOp = ALUOp.ADD;
         }

@@ -31,7 +31,7 @@ public class LogicInstruction extends Instruction {
         } else if (functionString.equals("010000")) {       // ori
             controlUnit.aluOp = ALUOp.OR;
             isOri = true;
-            immediate = ("0000000000000000" + rawString.substring(0, 15)).getBytes();
+            immediate = SignZeroExtend.extend(rawString.substring(0, 15).getBytes(), 0);
         }
 
         controlUnit.RegWre = RegWre.STATE_1;
