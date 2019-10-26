@@ -45,6 +45,9 @@ public class ArithmeticInstruction extends Instruction {
         byte[] data1 = registerFile.fetchRead1();
         byte[] data2 = registerFile.fetchRead2();
 
+        System.out.println(String.format("ArithmeticInstruction.EXE rsValue: %d, rtValue: %d", Utils.rawMemoryToInt32(data1), Utils.rawMemoryToInt32(data2)));
+
+
         switch (controlUnit.aluOp) {
             case ADD:
             {
@@ -69,5 +72,6 @@ public class ArithmeticInstruction extends Instruction {
         byte[] result = alu.aluResult();
         registerFile.signalWrite(rd, result);
         registerFile.doWrite();
+        System.out.println(String.format("LogicInstruction.WB result: %d", Utils.rawMemoryToInt32(result)));
     }
 }

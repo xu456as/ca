@@ -38,6 +38,7 @@ public class BranchInstruction extends Instruction {
         } else {
             controlUnit.pcSrc = PCSrc.STATE_0;
         }
+        System.out.println(String.format("BranchInstruction.EXE pcSrc is %s", controlUnit.pcSrc));
     }
 
     @Override

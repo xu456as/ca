@@ -11,6 +11,9 @@ public class ALU {
         int byte_int2 = Utils.rawMemoryToInt32(rhs);
         int byte_int_ttl = byte_int1+byte_int2;
         aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+
+        System.out.println(String.format("ALU.add value1: %d, value2: %d", byte_int1, byte_int2));
+
         return aluResult;
     }
 
@@ -19,6 +22,9 @@ public class ALU {
         int byte_int2 = Utils.rawMemoryToInt32(rhs);
         int byte_int_ttl = byte_int1-byte_int2;
         aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+
+        System.out.println(String.format("ALU.minus value1: %d, value2: %d", byte_int1, byte_int2));
+
         return aluResult;
     }
 
@@ -27,6 +33,9 @@ public class ALU {
         int byte_int2 = Utils.rawMemoryToInt32(rhs);
         int byte_int_ttl = byte_int1&byte_int2;
         aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+
+        System.out.println(String.format("ALU.and value1: %d, value2: %d", byte_int1, byte_int2));
+
         return aluResult;
     }
 
@@ -35,6 +44,9 @@ public class ALU {
         int byte_int2 = Utils.rawMemoryToInt32(rhs);
         int byte_int_ttl = byte_int1|byte_int2;
         aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+
+        System.out.println(String.format("ALU.or value1: %d, value2: %d", byte_int1, byte_int2));
+
         return aluResult;
     }
 
@@ -43,6 +55,9 @@ public class ALU {
         int byte_int2 = Utils.rawMemoryToInt32(rhs);
         int byte_int_ttl = byte_int1^byte_int2;
         aluResult = Utils.Int32ToRawMemory(byte_int_ttl);
+
+        System.out.println(String.format("ALU.xor value1: %d, value2: %d", byte_int1, byte_int2));
+
         return aluResult;
     }
 

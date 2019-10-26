@@ -30,6 +30,7 @@ public class StoreAndLoadInstruction extends Instruction {
                 controlUnit.DataMemRW = DataMemRW.STATE_0;
                 break;
         }
+        System.out.println(String.format("StoreAndLoadInstruction.ID dataMemRW is %s", controlUnit.DataMemRW));
         registerFile.signalRead1(rs);
         registerFile.signalRead2(rt);
     }
@@ -45,14 +46,16 @@ public class StoreAndLoadInstruction extends Instruction {
     @Override
     public void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc) {
         byte[] memValue = alu.aluResult();
+        byte[] rtValue = new byte[]{0, 0, 0, 0};
         if(controlUnit.DataMemRW == DataMemRW.STATE_1) {
             dataMemory.signalRead(Utils.rawMemoryToInt32(memValue), 4);
         }
         else if(controlUnit.DataMemRW == DataMemRW.STATE_0){
-            byte[] rtValue = registerFile.fetchRead2();
+            rtValue = registerFile.fetchRead2();
             dataMemory.signalWrite(Utils.rawMemoryToInt32(memValue), rtValue);
             dataMemory.doWrite();
         }
+        System.out.println(String.format("StoreAndLoadInstruction.MEM memValue is %d, registerFileIndex is %d", Utils.rawMemoryToInt32(memValue), Utils.rawMemoryToInt32(rtValue)));
     }
 
     @Override

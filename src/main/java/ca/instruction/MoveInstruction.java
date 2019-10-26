@@ -22,6 +22,7 @@ public class MoveInstruction extends Instruction {
 //            controlUnit.alum2Reg = ALUM2Reg.STATE_0;
             controlUnit.regOut = RegOut.STATE_1;
         }
+        System.out.println(String.format("MoveInstruction.ID fromRegister is %s, toRegister is %d", rs, rd));
     }
 
     @Override
@@ -40,6 +41,7 @@ public class MoveInstruction extends Instruction {
             registerFile.signalRead1(rs);
             byte[] result = registerFile.fetchRead1();
             registerFile.signalWrite(rd, result);
+            registerFile.doWrite();
         }
     }
 

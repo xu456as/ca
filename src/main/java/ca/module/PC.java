@@ -10,6 +10,7 @@ public class PC {
         lastAddress= currentAddress;
         adder.add(Utils.Int32ToRawMemory(currentAddress), Utils.Int32ToRawMemory(4));
         currentAddress = Utils.rawMemoryToInt32(adder.aluResult());
+        System.out.println(String.format("PC.plus4 currentInstructionAddress: %08d", currentAddress));
     }
 
     public int fetch() {
@@ -17,7 +18,8 @@ public class PC {
     }
 
     public void write(int immediate) {
-        lastAddress += immediate;
+        currentAddress += immediate;
+        System.out.println(String.format("PC.plus4 write: %08d", currentAddress));
     }
 
 }
