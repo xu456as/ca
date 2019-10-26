@@ -9,6 +9,7 @@ public class LogicInstruction extends Instruction {
     int rs = 0;
     int rt = 0;
     int rd = 0;
+    byte[] immediate;
 
     public LogicInstruction(byte[] rawInstruction) {
         super(rawInstruction);
@@ -17,22 +18,26 @@ public class LogicInstruction extends Instruction {
     @Override
     public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
         String rawString = Utils.byte32ToString(this.rawInstruction);
-
         String functionString = rawString.substring(0, 5);
         String operationString = rawString.substring(25, 31);
+        boolean isOri = false;
 
-        controlUnit.RegWre = RegWre.STATE_1;
-        controlUnit.ALUSrcB = ALUSrcB.STATE_0;
-        controlUnit.regOut = RegOut.STATE_1;
-        controlUnit.alum2Reg = ALUM2Reg.STATE_0;
-
-        if (operationString.equals("000010")) {
+        if (operationString.equals("010001")) {
             controlUnit.aluOp = ALUOp.AND;
-        } else if (functionString.equals("100101")) {
+        } else if (functionString.equals("010010")) {
             controlUnit.aluOp = ALUOp.OR;
         } else if (functionString.equals("100110")) {
             controlUnit.aluOp = ALUOp.XOR;
+        } else if (functionString.equals("010000")) {       // ori
+            controlUnit.aluOp = ALUOp.OR;
+            isOri = true;
+            immediate = SignZeroExtend.extend(rawString.substring(0, 15).getBytes(), 0);
         }
+
+        controlUnit.RegWre = RegWre.STATE_1;
+        controlUnit.ALUSrcB = isOri ? ALUSrcB.STATE_1 : ALUSrcB.STATE_0;
+        controlUnit.regOut = RegOut.STATE_1;
+        controlUnit.alum2Reg = ALUM2Reg.STATE_0;
 
         rs = Integer.parseInt(rawString.substring(21, 25), 2);
         rt = Integer.parseInt(rawString.substring(16, 20), 2);
@@ -46,7 +51,7 @@ public class LogicInstruction extends Instruction {
     public void EXE(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) {
 
         byte[] data1 = registerFile.fetchRead1();
-        byte[] data2 = registerFile.fetchRead2();
+        byte[] data2 = controlUnit.ALUSrcB == ALUSrcB.STATE_1 ? immediate : registerFile.fetchRead2();
 
         System.out.println(String.format("LogicInstruction.EXE rsValue: %d, rtValue: %d", Utils.rawMemoryToInt32(data1), Utils.rawMemoryToInt32(data2)));
 
