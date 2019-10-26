@@ -16,6 +16,11 @@ public class RegisterFile {
         for(int i = 0; i < 32;++i) {
             rawRegister[i] = new byte[4];
         }
+
+        rawRegister[16] = Utils.Int32ToRawMemory(0);
+        rawRegister[17] = Utils.Int32ToRawMemory(4);
+        rawRegister[30] = Utils.Int32ToRawMemory(8);
+        rawRegister[31] = Utils.Int32ToRawMemory(12);
     }
 
     public void signalRead1(int index){
@@ -41,6 +46,6 @@ public class RegisterFile {
 
     public void doWrite(){
         System.out.println(String.format("RegisterFile.doWrite writeIndex: %08d, int32Value: %d", writeIndex, Utils.rawMemoryToInt32(writeBuffer)));
-        System.arraycopy(rawRegister[writeIndex], 0, writeBuffer, 0, 4);;
+        System.arraycopy(writeBuffer, 0, rawRegister[writeIndex], 0, 4);;
     }
 }

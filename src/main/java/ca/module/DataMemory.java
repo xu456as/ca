@@ -27,7 +27,7 @@ public class DataMemory {
 
     public byte[] fetchRead(){
         byte[] ret = new byte[lengthInByte];
-        System.arraycopy(ret, 0, rawMemory, address % 4, lengthInByte);
+        System.arraycopy(rawMemory, address, ret, 0, lengthInByte);
 
         System.out.println(String.format("DataMemory.fetchRead address: %08d, int32Value: %d", address, Utils.rawMemoryToInt32(ret)));
 
@@ -41,6 +41,6 @@ public class DataMemory {
 
     public void doWrite(){
         System.out.println(String.format("DataMemory.doWrite address: %08d, int32Value: %d", address, Utils.rawMemoryToInt32(writeBuffer)));
-        System.arraycopy(rawMemory, address % 4, writeBuffer, 0, writeBuffer.length);
+        System.arraycopy(writeBuffer, 0, rawMemory, address, writeBuffer.length);
     }
 }

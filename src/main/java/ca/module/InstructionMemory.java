@@ -14,8 +14,8 @@ public class InstructionMemory {
     }
 
     public byte[] getInstruction(){
-        System.out.println(String.format("InstructionMemory.getInstruction address: %08d, rawInstruction: %s", address, Utils.byte32ToString(rawInstruction[address % 4])));
-        return rawInstruction[address % 4];
+        System.out.println(String.format("InstructionMemory.getInstruction address: %08d, rawInstruction: %s", address, Utils.byte32ToString(rawInstruction[address / 4])));
+        return rawInstruction[address / 4];
     }
 
     public void signalGet(int address) {

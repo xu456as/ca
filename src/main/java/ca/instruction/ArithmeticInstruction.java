@@ -31,9 +31,9 @@ public class ArithmeticInstruction extends Instruction {
             controlUnit.aluOp = ALUOp.SUB;
         }
 
-        rs = Integer.parseInt(rawString.substring(21, 25), 2);
-        rt = Integer.parseInt(rawString.substring(16, 20), 2);
-        rd = Integer.parseInt(rawString.substring(11, 15), 2);
+        rs = Integer.parseInt(rawString.substring(6, 11), 2);
+        rt = Integer.parseInt(rawString.substring(11, 16), 2);
+        rd = Integer.parseInt(rawString.substring(16, 21), 2);
 
         registerFile.signalRead1(rs);
         registerFile.signalRead2(rt);

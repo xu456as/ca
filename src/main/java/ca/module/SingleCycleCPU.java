@@ -19,6 +19,9 @@ public class SingleCycleCPU {
         String line = null;
         int curIdx = 0;
         while (null != (line = reader.readLine())){
+            if(line.startsWith("#")) {
+                continue;
+            }
             byte[] rawInst = new byte[4];
             rawInst[0] = Utils.stringToByte(line.substring(0, 8));
             rawInst[1] = Utils.stringToByte(line.substring(8, 16));
