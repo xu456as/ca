@@ -13,6 +13,12 @@ public class ArithmeticInstruction extends Instruction {
     int rt = 0;
     byte[] immediate;
 
+    byte[] rsValue;
+    byte[] rtValue;
+
+    ControlUnit controlUnit;
+    volatile byte[] aluResult;
+
     public ArithmeticInstruction(byte[] rawInstruction) {
         super(rawInstruction);
     }
@@ -33,6 +39,7 @@ public class ArithmeticInstruction extends Instruction {
             controlUnit.aluOp = ALUOp.ADD;
         }
 
+        this.controlUnit = controlUnit;
         rs = Integer.parseInt(rawString.substring(6, 11), 2);
         rt = Integer.parseInt(rawString.substring(11, 16), 2);
         rd = Integer.parseInt(rawString.substring(16, 21), 2);
@@ -42,15 +49,14 @@ public class ArithmeticInstruction extends Instruction {
         controlUnit.regOut = RegOut.STATE_1;
         controlUnit.alum2Reg = ALUM2Reg.STATE_0;
 
-        registerFile.signalRead1(rs);
-        registerFile.signalRead2(rt);
     }
 
     @Override
     public void EXE(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) {
-
-        byte[] data1 = registerFile.fetchRead1();
-        byte[] data2 = controlUnit.ALUSrcB == ALUSrcB.STATE_0 ? registerFile.fetchRead2() : immediate;
+        rsValue = registerFile.signalRead1(rs);
+        rtValue = registerFile.signalRead2(rt);
+        byte[] data1 = rsValue;
+        byte[] data2 = this.controlUnit.ALUSrcB == ALUSrcB.STATE_0 ? rtValue : immediate;
 
         System.out.println(String.format("ArithmeticInstruction.EXE rsValue: %d, rtValue: %d", Utils.rawMemoryToInt32(data1), Utils.rawMemoryToInt32(data2)));
 
@@ -58,12 +64,12 @@ public class ArithmeticInstruction extends Instruction {
         switch (controlUnit.aluOp) {
             case ADD:
             {
-                alu.add(data1, data2);
+                aluResult = alu.add(data1, data2);
                 break;
             }
             case SUB:
             {
-                alu.minus(data1, data2);
+                aluResult = alu.minus(data1, data2);
                 break;
             }
         }
@@ -76,9 +82,8 @@ public class ArithmeticInstruction extends Instruction {
 
     @Override
     public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, DataMemory dataMemory) {
-        byte[] result = alu.aluResult();
+        byte[] result = aluResult;
         registerFile.signalWrite(rd, result);
-        registerFile.doWrite();
-        System.out.println(String.format("LogicInstruction.WB result: %d", Utils.rawMemoryToInt32(result)));
+        System.out.println(String.format("ArithmeticInstruction.WB result: %d", Utils.rawMemoryToInt32(result)));
     }
 }

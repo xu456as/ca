@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws Exception{
         SingleCycleCPU singleCycleCPU = new SingleCycleCPU();
-        singleCycleCPU.loadCode(new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream("/LoadAndStore.txt"))));
+        singleCycleCPU.loadCode(new BufferedReader(new InputStreamReader(Main.class.getResourceAsStream("/LoadAddStore.txt"))));
         singleCycleCPU.mainLoop();
     }
 }

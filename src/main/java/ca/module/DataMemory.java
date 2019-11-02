@@ -3,11 +3,11 @@ package ca.module;
 import ca.Utils;
 
 public class DataMemory {
-    byte[] rawMemory = new byte[1024 * 4];
+    volatile byte[] rawMemory = new byte[1024 * 4];
 
-    int address;
-    int lengthInByte;
-    byte[] writeBuffer;
+    volatile int address;
+    volatile int lengthInByte;
+    volatile byte[] writeBuffer;
 
     public DataMemory(){
         /* mem[0 - 4] = (0X0000000A) */
@@ -20,9 +20,16 @@ public class DataMemory {
         rawMemory[15] = 6;
     }
 
-    public void signalRead(int address, int lengthInByte){
+    public byte[] signalRead(int address, int lengthInByte){
         this.address = address;
         this.lengthInByte = lengthInByte;
+        System.out.println(String.format("DataMemory.signalRead address: %08d", address));
+        byte[] ret = new byte[lengthInByte];
+        System.arraycopy(rawMemory, address, ret, 0, lengthInByte);
+
+        System.out.println(String.format("DataMemory.fetchRead address: %08d, int32Value: %d", address, Utils.rawMemoryToInt32(ret)));
+
+        return ret;
     }
 
     public byte[] fetchRead(){
@@ -37,6 +44,8 @@ public class DataMemory {
     public void signalWrite(int address, byte[] data){
         this.address = address;
         this.writeBuffer = data;
+        System.out.println(String.format("DataMemory.doWrite address: %08d, int32Value: %d", address, Utils.rawMemoryToInt32(writeBuffer)));
+        System.arraycopy(writeBuffer, 0, rawMemory, address, writeBuffer.length);
     }
 
     public void doWrite(){

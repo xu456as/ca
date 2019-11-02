@@ -13,6 +13,13 @@ public class StoreAndLoadInstruction extends Instruction {
     int rt;
     int immediate;
 
+    volatile byte[] aluResult = null;
+    DataMemRW dataMemRW = null;
+    volatile byte[] data;
+
+    byte[] rsValue;
+    byte[] rtValue;
+
     @Override
     public void ID(RegisterFile registerFile, ControlUnit controlUnit) {
         String insStr = Utils.byte32ToString(this.rawInstruction);
@@ -30,41 +37,38 @@ public class StoreAndLoadInstruction extends Instruction {
                 controlUnit.DataMemRW = DataMemRW.STATE_0;
                 break;
         }
+        dataMemRW = controlUnit.DataMemRW;
         System.out.println(String.format("StoreAndLoadInstruction.ID dataMemRW is %s", controlUnit.DataMemRW));
-        registerFile.signalRead1(rs);
-        registerFile.signalRead2(rt);
     }
 
     @Override
     public void EXE(RegisterFile registerFile, ALU alu, ControlUnit controlUnit) {
-        byte[] rsValue = registerFile.fetchRead1();
-        byte[] rtValue = registerFile.fetchRead2();
+        rsValue = registerFile.signalRead1(rs);
+        rtValue = registerFile.signalRead2(rt);
 
-        alu.add(rsValue, Utils.Int32ToRawMemory(immediate << 2));
+        aluResult = alu.add(rsValue, Utils.Int32ToRawMemory(immediate << 2));
     }
 
     @Override
     public void MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc) {
-        byte[] memValue = alu.aluResult();
-        byte[] rtValue = new byte[]{0, 0, 0, 0};
-        if(controlUnit.DataMemRW == DataMemRW.STATE_0) {
-            dataMemory.signalRead(Utils.rawMemoryToInt32(memValue), 4);
+        byte[] memValue = aluResult;
+        if(dataMemRW == DataMemRW.STATE_0) {
+            data = dataMemory.signalRead(Utils.rawMemoryToInt32(memValue), 4);
+            if(data == null) {
+                System.out.println("nullData");
+            }
         }
-        else if(controlUnit.DataMemRW == DataMemRW.STATE_1){
-            rtValue = registerFile.fetchRead2();
+        else if(dataMemRW == DataMemRW.STATE_1){
             dataMemory.signalWrite(Utils.rawMemoryToInt32(memValue), rtValue);
-            dataMemory.doWrite();
         }
         System.out.println(String.format("StoreAndLoadInstruction.MEM memValue is %d, registerFileIndex is %d", Utils.rawMemoryToInt32(memValue), rt));
     }
 
     @Override
     public void WB(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, DataMemory dataMemory) {
-        byte[] memValue = alu.aluResult();
-        if(controlUnit.DataMemRW == DataMemRW.STATE_0) {
-            byte[] data = dataMemory.fetchRead();
+        if(dataMemRW == DataMemRW.STATE_0) {
             registerFile.signalWrite(rt, data);
-            registerFile.doWrite();
+            System.out.println("data:" + Utils.byte32ToString(data));
         }
     }
 }

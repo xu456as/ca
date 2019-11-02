@@ -3,9 +3,9 @@ package ca.module;
 import ca.Utils;
 
 public class InstructionMemory {
-    byte[][] rawInstruction = new byte[1024][4];
-    int address;
-    int instructionCount = 0;
+    volatile byte[][] rawInstruction = new byte[1024][4];
+    volatile int address;
+    volatile int instructionCount = 0;
 
     public InstructionMemory(){
         for(int i = 0; i < 1024; ++i) {

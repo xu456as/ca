@@ -4,7 +4,7 @@ import ca.Utils;
 
 public class ALU {
 
-    byte[] aluResult = null;
+    volatile byte[] aluResult = null;
 
     public byte[] add(byte[] lhs, byte[] rhs) {
         int byte_int1 = Utils.rawMemoryToInt32(lhs);

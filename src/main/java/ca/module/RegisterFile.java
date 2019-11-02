@@ -7,10 +7,10 @@ import java.util.Arrays;
 public class RegisterFile {
     byte[][] rawRegister = new byte[32][4];
 
-    int read1Index;
-    int read2Index;
-    int writeIndex;
-    byte[] writeBuffer;
+    volatile int read1Index;
+    volatile int read2Index;
+    volatile int writeIndex;
+    volatile byte[] writeBuffer;
 
     public RegisterFile() {
         for(int i = 0; i < 32;++i) {
@@ -23,16 +23,20 @@ public class RegisterFile {
         rawRegister[31] = Utils.Int32ToRawMemory(12);
     }
 
-    public void signalRead1(int index){
+    public byte[] signalRead1(int index){
         this.read1Index = index;
+        System.out.println(String.format("RegisterFile.fetchRead1 read1Index: %08d, int32Value: %d", read1Index, Utils.rawMemoryToInt32(rawRegister[read1Index])));
+        return rawRegister[read1Index];
     }
     public byte[] fetchRead1(){
         System.out.println(String.format("RegisterFile.fetchRead1 read1Index: %08d, int32Value: %d", read1Index, Utils.rawMemoryToInt32(rawRegister[read1Index])));
         return rawRegister[read1Index];
     }
 
-    public void signalRead2(int index){
+    public byte[] signalRead2(int index){
         this.read2Index = index;
+        System.out.println(String.format("RegisterFile.fetchRead2 read2Index: %08d, int32Value: %d", read2Index, Utils.rawMemoryToInt32(rawRegister[read2Index])));
+        return rawRegister[read2Index];
     }
     public byte[] fetchRead2(){
         System.out.println(String.format("RegisterFile.fetchRead2 read2Index: %08d, int32Value: %d", read2Index, Utils.rawMemoryToInt32(rawRegister[read2Index])));
@@ -40,8 +44,11 @@ public class RegisterFile {
     }
 
     public void signalWrite(int index, byte[] data) {
+        System.out.println(String.format("RegisterFile.signalWrite index: %d", index));
         this.writeIndex = index;
         writeBuffer = data;
+        System.out.println(String.format("RegisterFile.doWrite writeIndex: %08d, int32Value: %d", writeIndex, Utils.rawMemoryToInt32(writeBuffer)));
+        System.arraycopy(writeBuffer, 0, rawRegister[writeIndex], 0, 4);
     }
 
     public void doWrite(){
