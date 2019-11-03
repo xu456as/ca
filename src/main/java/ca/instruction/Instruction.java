@@ -3,7 +3,7 @@ package ca.instruction;
 import ca.module.*;
 
 public abstract class Instruction {
-    byte[] rawInstruction;
+    public byte[] rawInstruction;
     Instruction(byte[] rawInstruction){
         this.rawInstruction = rawInstruction;
     }

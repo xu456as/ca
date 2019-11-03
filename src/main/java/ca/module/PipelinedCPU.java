@@ -5,10 +5,9 @@ import ca.instruction.*;
 
 import java.io.BufferedReader;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SingleCycleCPU {
+public class PipelinedCPU {
     ALU alu = new ALU();
     DataMemory dataMemory = new DataMemory();
     InstructionMemory instructionMemory = new InstructionMemory();
@@ -135,7 +134,8 @@ public class SingleCycleCPU {
     static class InstructionCycle {
 //        volatile byte[] currentRawInstruction;
 //        volatile Instruction decodedInstruction;
-
+        CountDownLatch addLatch = new CountDownLatch(2);
+        CountDownLatch storeLatch = new CountDownLatch(1);
         byte[] IF(PC pc, InstructionMemory instructionMemory, ControlUnit controlUnit)  {
             byte[] currentRawInstruction;
             synchronized (lockObj) {
@@ -145,7 +145,7 @@ public class SingleCycleCPU {
                 currentRawInstruction = instructionMemory.getInstruction();
                 System.out.println(String.format("======================================== CPU.IF end ========================================"));
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -188,7 +188,7 @@ public class SingleCycleCPU {
                 decodedInstruction.ID(registerFile, controlUnit);
                 System.out.println(String.format("======================================== CPU.ID end ========================================"));
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -197,12 +197,19 @@ public class SingleCycleCPU {
         }
 
         public Instruction EXE(RegisterFile registerFile, ALU alu, ControlUnit controlUnit, Instruction decodedInstruction, int address)  {
+            if(decodedInstruction instanceof ArithmeticInstruction) {
+                try {
+                    addLatch.await();
+                }catch (Exception e) {
+
+                }
+            }
             synchronized (lockObj) {
                 System.out.println(String.format("======================================== CPU.EXE start %08d ================================", address));
                 decodedInstruction.EXE(registerFile, alu, controlUnit);
                 System.out.println(String.format("======================================== CPU.EXE end ========================================"));
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -211,12 +218,21 @@ public class SingleCycleCPU {
         }
 
         public Instruction MEM(RegisterFile registerFile, DataMemory dataMemory, ALU alu, ControlUnit controlUnit, PC pc, Instruction decodedInstruction, int address)  {
+            if(decodedInstruction instanceof StoreAndLoadInstruction) {
+                if(Utils.byte32ToString(decodedInstruction.rawInstruction).startsWith("100110")) {
+                    try {
+                        addLatch.await();
+                    }catch (Exception e){
+
+                    }
+                }
+            }
             synchronized (lockObj) {
                 System.out.println(String.format("======================================== CPU.MEM start %08d ================================",address));
                 decodedInstruction.MEM(registerFile, dataMemory, alu, controlUnit, pc);
                 System.out.println(String.format("======================================== CPU.MEM end ========================================"));
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -229,8 +245,16 @@ public class SingleCycleCPU {
                 System.out.println(String.format("======================================== CPU.WB start %08d ================================", address));
                 decodedInstruction.WB(registerFile, alu, controlUnit, dataMemory);
                 System.out.println(String.format("======================================== CPU.WB end ========================================"));
+                if(decodedInstruction instanceof StoreAndLoadInstruction) {
+                    if(Utils.byte32ToString(decodedInstruction.rawInstruction).startsWith("100111")) {
+                        addLatch.countDown();
+                    }
+                }
+                if(decodedInstruction instanceof ArithmeticInstruction) {
+                    storeLatch.countDown();
+                }
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
